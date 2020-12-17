@@ -1,0 +1,32 @@
+{
+    "name": "square1/chart-generator",
+    "description": "Package to manage the Square1 microservice chart-generator",
+    "type": "library",
+    "require": {
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "^2.0",
+        "laravel/framework": "^7|^8"
+    },
+    "authors": [
+        {
+            "name": "Jose Vicente Orts Romero",
+            "email": "vince@square1.io"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Square1\\ChartGenerator\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Square1\\ChartGenerator\\ServiceProvider"
+            ],
+            "aliases": {
+                "ChartGenerator": "Square1\\ChartGenerator\\Facade"
+            }
+        }
+    }
+}

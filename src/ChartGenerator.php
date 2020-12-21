@@ -34,7 +34,8 @@ class ChartGenerator
                     'height' => $height,
                 ],
                 'datasets' => $datasets,
-                'options' => $options
+                'options' => $options,
+                'format' => 'buffer'
             ]);
 
             if ($response->ok()) {

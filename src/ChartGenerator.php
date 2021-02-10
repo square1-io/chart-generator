@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Square1\ChartGenerator;
 
 use Illuminate\Support\Facades\Http;
@@ -16,16 +15,19 @@ class ChartGenerator
      * @param int    $height
      * @param array  $datasets
      * @param array  $options
+     * @param bool   $asSVG
      *
-     * @return \Intervention\Image\Image|null
+     * @return \Intervention\Image\Image|string|null
      */
-    public function createChart(string $type, int $width, int $height, array $datasets, array $options): ?\Intervention\Image\Image
+    public function createChart(string $type, int $width, int $height, array $datasets, array $options, bool $asSVG = false)
     {
         if (config('chart-generator.url')) {
             $request = Http::withHeaders([
                 'X-CHART-ACCOUNT' => config('chart-generator.key'),
                 'X-CHART-HASH' => hash('sha512', config('chart-generator.key').config('chart-generator.secret')),
             ]);
+
+            $options['asSVG'] = $asSVG;
 
             $response = $request->post(rtrim(config('chart-generator.url'), '/').'/draw', [
                 'type' => $type,
@@ -35,11 +37,11 @@ class ChartGenerator
                 ],
                 'datasets' => $datasets,
                 'options' => $options,
-                'format' => 'buffer'
+                'format' => 'buffer',
             ]);
 
             if ($response->ok()) {
-                return Image::make($response->body())->encode();
+                return $asSVG ? $response->body() : Image::make($response->body())->encode();
             }
         }
 
@@ -53,10 +55,11 @@ class ChartGenerator
      * @param int    $width
      * @param int    $height
      * @param array  $datasets
+     * @param bool   $asSVG
      *
-     * @return \Intervention\Image\Image|null
+     * @return \Intervention\Image\Image|string|null
      */
-    public function createMixedChart(string $title, int $width, int $height, array $datasets): ?\Intervention\Image\Image
+    public function createMixedChart(string $title, int $width, int $height, array $datasets, bool $asSVG = false)
     {
         if (config('chart-generator.url')) {
             $request = Http::withHeaders([
@@ -73,12 +76,15 @@ class ChartGenerator
                 'datasets' => [
                     'mixed' => $datasets,
                 ],
-                'options' => ['title' => $title],
-                'format' => 'buffer'
+                'options' => [
+                    'title' => $title,
+                    'asSVG' => $asSVG,
+                ],
+                'format' => 'buffer',
             ]);
 
             if ($response->ok()) {
-                return Image::make($response->body())->encode();
+                return $asSVG ? $response->body() : Image::make($response->body())->encode();
             }
         }
 

@@ -59,7 +59,7 @@ class ChartGenerator
      *
      * @return \Intervention\Image\Image|string|null
      */
-    public function createMixedChart(string $title, int $width, int $height, array $datasets, bool $asSVG = false)
+    public function createMixedChart(string $title, int $width, int $height, array $datasets, bool $asSVG = false, bool $mixedDataLabels = false)
     {
         if (config('chart-generator.url')) {
             $request = Http::withHeaders([
@@ -79,6 +79,7 @@ class ChartGenerator
                 'options' => [
                     'title' => $title,
                     'asSVG' => $asSVG,
+                    'showMixedLabels' => $mixedDataLabels,
                 ],
                 'format' => 'buffer',
             ]);
